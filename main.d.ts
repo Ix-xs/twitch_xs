@@ -25,7 +25,7 @@ export declare class twitch_xs {
         token_type:string,
        }
     }>;
-    getUsers: () => Promise<{
+    getUsers: (usernames:Array<string>) => Promise<{
         ok:boolean,
         status:number,
         statusText:string,
@@ -40,7 +40,7 @@ export declare class twitch_xs {
         created_at:string
         }>
         }>;
-    getLives: () => Promise<{
+    getLives: (usernames:Array<string>) => Promise<{
         ok:boolean,
         status:number,
         statusText:string,
