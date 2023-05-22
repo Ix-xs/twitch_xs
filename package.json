@@ -1,28 +1,28 @@
 {
     "devDependencies": {
-      "@types/node": "^18.16.0"
+        "@types/node": "^18.16.0"
     },
     "name": "twitch_xs",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Twitch api use",
     "main": "main.js",
     "typings": "main.d.ts",
     "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1"
     },
     "keywords": [
-      "Twitch",
-      "API",
-      "JS"
+        "Twitch",
+        "API",
+        "JS"
     ],
     "author": "Ix-xs",
     "license": "ISC",
     "repository": {
-      "type": "git",
-      "url": "git+https://github.com/Ix-xs/twitch_xs.git"
+        "type": "git",
+        "url": "git+https://github.com/Ix-xs/twitch_xs.git"
     },
     "bugs": {
-      "url": "https://github.com/Ix-xs/twitch_xs/issues"
+        "url": "https://github.com/Ix-xs/twitch_xs/issues"
     },
     "homepage": "https://github.com/Ix-xs/twitch_xs#readme"
-  }
+}
