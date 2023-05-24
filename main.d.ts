@@ -578,8 +578,8 @@ declare class twitch_xs {
      * started_at?:string,
      * ended_at?:string,
      * first?:number,
-     * before:string,
-     * after:string
+     * before?:string,
+     * after?:string
      * }} [params]
      * > • `started_at?` The start date used to filter clips. The API returns only clips within the start and end date window. Specify the date and time in RFC3339 format.
      * > • `ended_at?` The end date used to filter clips. If not specified, the time window is the start date plus one week. Specify the date and time in RFC3339 format.
@@ -636,8 +636,8 @@ declare class twitch_xs {
         started_at?: string;
         ended_at?: string;
         first?: number;
-        before: string;
-        after: string;
+        before?: string;
+        after?: string;
     }) => Promise<{
         ok: boolean;
         status: number;
@@ -850,7 +850,7 @@ declare class twitch_xs {
      * period?:"all"|"day"|"month"|"week",
      * sort?:"time"|"trending"|"views",
      * type?:"all"|"archive"|"highlight"|"upload",
-     * first?:string,
+     * first?:number,
      * after?:string,
      * before?:string,
      * }} [params]

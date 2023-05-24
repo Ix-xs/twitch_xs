@@ -13,7 +13,8 @@
     "keywords": [
         "Twitch",
         "API",
-        "JS"
+        "JS",
+        "TS"
     ],
     "author": "Ix-xs",
     "license": "ISC",
