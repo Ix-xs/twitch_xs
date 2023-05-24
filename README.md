@@ -1,6 +1,6 @@
 <div align=center>
 <span style="font-size:30px;">twitch_xs</span><br>
-<img alt="langs" src="https://github-readme-stats.vercel.app/api/top-langs/?username=Ix-xs&langs_count=5&custom_title=Languages&title_color=2986cc&text_color=2986cc&icon_color=2986cc&show_icons=true&theme=tokyonight&hide_border=true&border_radius=10">
+<img alt="langs" src="https://github-readme-stats.vercel.app/api/top-langs/?username=Ix-xs&exclude_repo=metamob_xs,ytb_xs,Oaky&langs_count=5&custom_title=Languages&title_color=2986cc&text_color=2986cc&icon_color=2986cc&show_icons=true&theme=tokyonight&hide_border=true&border_radius=10">
 <br>
 Twitch_xs est une bibliothèque <b>JavaScript</b>/<b>TypeScript</b> qui facilite l'utilisation de l'<b>API Twitch</b> pour l'obtention d'<b>app tokens</b>. Elle vous permet d'interagir avec l'<b>API Twitch</b> de manière simplifiée pour effectuer des requêtes et récupérer des données spécifiques. Cette bibliothèque est conçue pour une utilisation avec des <b>app tokens</b>, vous permettant ainsi d'accéder à certaines fonctionnalités de l'<b>API Twitch</b> en tant qu'application <b>sans nécessiter l'authentification d'un utilisateur</b>. Elle fournit des méthodes et des fonctionnalités pour générer des <b>app tokens</b>, effectuer des requêtes d'API, récupérer des informations sur les utilisateurs, les chaînes, les diffusions en direct, les jeux, etc. <b>twitch_xs</b> est une solution pratique pour les développeurs souhaitant intégrer l'<b>API Twitch</b> dans leurs applications ou services avec des <b>app tokens</b>.
 
