@@ -1,6 +1,6 @@
 {
     "devDependencies": {
-        "@types/node": "^18.16.0"
+        "@types/node": "^18.16.14"
     },
     "name": "twitch_xs",
     "version": "1.0.1",
