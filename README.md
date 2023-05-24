@@ -57,7 +57,7 @@ Méthode | options | Description |
 ```js
 const { twitch_xs } = require("twitch_xs");
 
-const client = new metamob_xs({ client_id:"votre_client_id", client_secret:"votre_secret_client" });
+const client = new twitch_xs({ client_id:"votre_client_id", client_secret:"votre_secret_client" });
 
 client.getStreams(["twitchdev"]).then(console.log); // Renvoi les lives des utilisateurs ciblé (vide si l'utilisateur ciblé n'est pas en live).
 
