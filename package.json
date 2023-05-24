@@ -3,7 +3,7 @@
         "@types/node": "^18.16.14"
     },
     "name": "twitch_xs",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Twitch api use",
     "main": "main.js",
     "typings": "main.d.ts",
