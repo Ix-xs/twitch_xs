@@ -78,6 +78,17 @@ var twitch_xs = /** @class */ (function () {
                             })];
                     case 1:
                         response = _a.sent();
+                        if (!node_fs_1.default.existsSync("./@twitch_xs")) {
+                            node_fs_1.default.mkdirSync("./@twitch_xs", { recursive: true });
+                        }
+                        if (!node_fs_1.default.existsSync("./@twitch_xs/token.json")) {
+                            node_fs_1.default.writeFileSync("./@twitch_xs/token.json", JSON.stringify({
+                                access_token: "",
+                                expires_in: 0,
+                                token_type: "",
+                                created_at: 0
+                            }, null, 4));
+                        }
                         if (!response.ok) return [3 /*break*/, 3];
                         return [4 /*yield*/, response.json()];
                     case 2:
@@ -86,7 +97,7 @@ var twitch_xs = /** @class */ (function () {
                         data.created_at = new Date().getTime();
                         this.token = data;
                         token_json_1[0] = data;
-                        (0, node_fs_1.writeFileSync)("./@twitch_xs/token.json", JSON.stringify(token_json_1, null, 4));
+                        node_fs_1.default.writeFileSync("./@twitch_xs/token.json", JSON.stringify(token_json_1, null, 4));
                         return [2 /*return*/, { ok: response.ok, status: response.status, statusText: response.statusText, data: data }];
                     case 3: throw new Error("Cannot generate Token => ".concat(response.statusText));
                 }
@@ -97,6 +108,17 @@ var twitch_xs = /** @class */ (function () {
          * @returns {boolean}
          */
         this.isExpiredToken = function () {
+            if (!node_fs_1.default.existsSync("./@twitch_xs")) {
+                node_fs_1.default.mkdirSync("./@twitch_xs", { recursive: true });
+            }
+            if (!node_fs_1.default.existsSync("./@twitch_xs/token.json")) {
+                node_fs_1.default.writeFileSync("./@twitch_xs/token.json", JSON.stringify({
+                    access_token: "",
+                    expires_in: 0,
+                    token_type: "",
+                    created_at: 0
+                }, null, 4));
+            }
             var now = Math.floor(Date.now() / 1000);
             var createdAt = _this.token.created_at;
             var expiresIn = _this.token.expires_in;
@@ -130,9 +152,20 @@ var twitch_xs = /** @class */ (function () {
                             throw new Error("Cannot refresh Token => ".concat(new_token.statusText));
                         }
                         else {
+                            if (!node_fs_1.default.existsSync("./@twitch_xs")) {
+                                node_fs_1.default.mkdirSync("./@twitch_xs", { recursive: true });
+                            }
+                            if (!node_fs_1.default.existsSync("./@twitch_xs/token.json")) {
+                                node_fs_1.default.writeFileSync("./@twitch_xs/token.json", JSON.stringify({
+                                    access_token: "",
+                                    expires_in: 0,
+                                    token_type: "",
+                                    created_at: 0
+                                }, null, 4));
+                            }
                             this.token = new_token.data;
                             token_json_1[0] = new_token.data;
-                            (0, node_fs_1.writeFileSync)("./@twitch_xs/token.json", JSON.stringify(token_json_1, null, 4));
+                            node_fs_1.default.writeFileSync("./@twitch_xs/token.json", JSON.stringify(token_json_1, null, 4));
                             return [2 /*return*/, { ok: new_token.ok, status: new_token.status, statusText: new_token.statusText, data: new_token.data }];
                         }
                         return [2 /*return*/];

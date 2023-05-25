@@ -1,5 +1,5 @@
 import token from "./@twitch_xs/token.json";
-import { writeFileSync } from "node:fs";
+import fs from "node:fs";
 
 class twitch_xs {
 
@@ -62,13 +62,25 @@ class twitch_xs {
 			method:"POST",
 		});
 
+		if (!fs.existsSync("./@twitch_xs")) {
+			fs.mkdirSync("./@twitch_xs", { recursive: true });
+		}
+		if (!fs.existsSync("./@twitch_xs/token.json")) {
+			fs.writeFileSync("./@twitch_xs/token.json", JSON.stringify({
+				access_token:"",
+				expires_in:0,
+				token_type:"",
+				created_at:0
+			}, null, 4));
+		  }
+
 		if (response.ok) {
 			const data = await response.json();
 			data.token_type = "Bearer";
 			data.created_at = new Date().getTime();
 			this.token = data;
 			token[0] = data;
-			writeFileSync("./@twitch_xs/token.json", JSON.stringify(token, null, 4));
+			fs.writeFileSync("./@twitch_xs/token.json", JSON.stringify(token, null, 4));
 			return { ok:response.ok, status:response.status, statusText:response.statusText, data:data };
 		}
 		else {
@@ -81,6 +93,18 @@ class twitch_xs {
      * @returns {boolean}
      */
 	isExpiredToken = ():boolean => {
+
+		if (!fs.existsSync("./@twitch_xs")) {
+			fs.mkdirSync("./@twitch_xs", { recursive: true });
+		}
+		if (!fs.existsSync("./@twitch_xs/token.json")) {
+			fs.writeFileSync("./@twitch_xs/token.json", JSON.stringify({
+				access_token:"",
+				expires_in:0,
+				token_type:"",
+				created_at:0
+			}, null, 4));
+		  }
 
 		const now = Math.floor(Date.now() / 1000);
 		const createdAt = this.token.created_at;
@@ -124,9 +148,22 @@ class twitch_xs {
 			throw new Error(`Cannot refresh Token => ${new_token.statusText}`);
 		}
         else {
+
+			if (!fs.existsSync("./@twitch_xs")) {
+				fs.mkdirSync("./@twitch_xs", { recursive: true });
+			}
+			if (!fs.existsSync("./@twitch_xs/token.json")) {
+				fs.writeFileSync("./@twitch_xs/token.json", JSON.stringify({
+					access_token:"",
+					expires_in:0,
+					token_type:"",
+					created_at:0
+				}, null, 4));
+			  }
+
             this.token = new_token.data;
 			token[0] = new_token.data;
-			writeFileSync("./@twitch_xs/token.json", JSON.stringify(token, null, 4));
+			fs.writeFileSync("./@twitch_xs/token.json", JSON.stringify(token, null, 4));
             return { ok:new_token.ok, status:new_token.status, statusText:new_token.statusText, data:new_token.data };
         }
 
