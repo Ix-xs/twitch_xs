@@ -37,7 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.twitch_xs = void 0;
-var token_json_1 = require("./token.json");
+var token_json_1 = require("./@twitch_xs/token.json");
 var node_fs_1 = require("node:fs");
 var twitch_xs = /** @class */ (function () {
     /**
@@ -86,7 +86,7 @@ var twitch_xs = /** @class */ (function () {
                         data.created_at = new Date().getTime();
                         this.token = data;
                         token_json_1[0] = data;
-                        (0, node_fs_1.writeFileSync)("./token.json", JSON.stringify(token_json_1, null, 4));
+                        (0, node_fs_1.writeFileSync)("./@twitch_xs/token.json", JSON.stringify(token_json_1, null, 4));
                         return [2 /*return*/, { ok: response.ok, status: response.status, statusText: response.statusText, data: data }];
                     case 3: throw new Error("Cannot generate Token => ".concat(response.statusText));
                 }
@@ -132,7 +132,7 @@ var twitch_xs = /** @class */ (function () {
                         else {
                             this.token = new_token.data;
                             token_json_1[0] = new_token.data;
-                            (0, node_fs_1.writeFileSync)("./token.json", JSON.stringify(token_json_1, null, 4));
+                            (0, node_fs_1.writeFileSync)("./@twitch_xs/token.json", JSON.stringify(token_json_1, null, 4));
                             return [2 /*return*/, { ok: new_token.ok, status: new_token.status, statusText: new_token.statusText, data: new_token.data }];
                         }
                         return [2 /*return*/];
@@ -209,29 +209,30 @@ var twitch_xs = /** @class */ (function () {
         }).then(console.log);
          */
         this.getStreams = function (params) { return __awaiter(_this, void 0, void 0, function () {
-            var link, i, games, ids, map, i, map, i, users, ids, map, response, data;
+            var link, linkParams, i, games, ids, i, i, users, userIds, response, data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         link = "https://api.twitch.tv/helix/streams";
+                        linkParams = [];
                         if (!params) return [3 /*break*/, 4];
                         if (params.after) {
                             if (typeof params.after !== "string") {
                                 throw new TypeError("`after` parameter must be a string => Received ".concat(typeof params.after));
                             }
-                            link = link.endsWith("?") ? "".concat(link, "after=").concat(params.after) : link.endsWith("&") ? "".concat(link, "after=").concat(params.after) : "".concat(link, "?after=").concat(params.after);
+                            linkParams.push("after=".concat(params.after));
                         }
                         if (params.before) {
                             if (typeof params.before !== "string") {
                                 throw new TypeError("`before` parameter must be a string => Received ".concat(typeof params.before));
                             }
-                            link = link.endsWith("?") ? "".concat(link, "before=").concat(params.before) : link.endsWith("&") ? "".concat(link, "before=").concat(params.before) : "".concat(link, "?before=").concat(params.before);
+                            linkParams.push("before=".concat(params.before));
                         }
                         if (params.first) {
                             if (typeof params.first !== "number") {
                                 throw new TypeError("`first` parameter must be a number => Received ".concat(typeof params.first));
                             }
-                            link = link.endsWith("?") ? "".concat(link, "first=").concat(params.first) : link.endsWith("&") ? "".concat(link, "first=").concat(params.first) : "".concat(link, "?first=").concat(params.first);
+                            linkParams.push("first=".concat(params.first));
                         }
                         if (!params.games_names) return [3 /*break*/, 2];
                         if (!Array.isArray(params.games_names)) {
@@ -249,8 +250,7 @@ var twitch_xs = /** @class */ (function () {
                             throw new Error("Cannot get games => ".concat(games.statusText));
                         }
                         ids = games.data.map(function (game) { return game.id; });
-                        map = ids.slice(0, 100).join('&game_id=');
-                        link = link.endsWith("?") ? "".concat(link, "game_id=").concat(map) : link.endsWith("&") ? "".concat(link, "game_id=").concat(map) : "".concat(link, "?game_id=").concat(map);
+                        linkParams.push("game_id=".concat(ids.slice(0, 100).join('&game_id=')));
                         _a.label = 2;
                     case 2:
                         if (params.languages) {
@@ -262,14 +262,13 @@ var twitch_xs = /** @class */ (function () {
                                     throw new TypeError("`languages` parameter must be an array of string => Received ".concat(typeof params.languages[i], " in the array"));
                                 }
                             }
-                            map = params.languages.slice(0, 100).join('&language=');
-                            link = link.endsWith("?") ? "".concat(link, "language=").concat(map) : link.endsWith("&") ? "".concat(link, "language=").concat(map) : "".concat(link, "?language=").concat(map);
+                            linkParams.push("language=".concat(params.languages.slice(0, 100).join('&language=')));
                         }
                         if (params.type) {
                             if (params.type !== "all" && params.type !== "live") {
                                 throw new Error("`type` parameter must be \"all\" or \"live\"");
                             }
-                            link = link.endsWith("?") ? "".concat(link, "type=").concat(params.type) : link.endsWith("&") ? "".concat(link, "type=").concat(params.type) : "".concat(link, "?type=").concat(params.type);
+                            linkParams.push("type=".concat(params.type));
                         }
                         if (!params.users_names) return [3 /*break*/, 4];
                         if (!Array.isArray(params.users_names)) {
@@ -286,9 +285,8 @@ var twitch_xs = /** @class */ (function () {
                         if (!users.ok || !users.data) {
                             throw new Error("Cannot get users => ".concat(users.statusText));
                         }
-                        ids = users.data.map(function (user) { return user.id; });
-                        map = ids.slice(0, 100).join('&user_id=');
-                        link = link.endsWith("?") ? "".concat(link, "user_id=").concat(map) : link.endsWith("&") ? "".concat(link, "user_id=").concat(map) : "".concat(link, "?user_id=").concat(map);
+                        userIds = users.data.map(function (user) { return user.id; });
+                        linkParams.push("user_id=".concat(userIds.slice(0, 100).join('&user_id=')));
                         _a.label = 4;
                     case 4:
                         if (!this.isExpiredToken()) return [3 /*break*/, 6];
@@ -296,13 +294,15 @@ var twitch_xs = /** @class */ (function () {
                     case 5:
                         _a.sent();
                         _a.label = 6;
-                    case 6: return [4 /*yield*/, fetch(link, {
-                            method: "GET",
-                            headers: {
-                                "Authorization": "".concat(this.token.token_type, " ").concat(this.token.access_token),
-                                "Client-Id": this.client_id,
-                            },
-                        })];
+                    case 6:
+                        link += "?" + linkParams.join("&");
+                        return [4 /*yield*/, fetch(link, {
+                                method: "GET",
+                                headers: {
+                                    "Authorization": "".concat(this.token.token_type, " ").concat(this.token.access_token),
+                                    "Client-Id": this.client_id,
+                                },
+                            })];
                     case 7:
                         response = _a.sent();
                         if (!response.ok) return [3 /*break*/, 9];
@@ -905,7 +905,7 @@ var twitch_xs = /** @class */ (function () {
         client.getClips("twitchdev").then(console.log);
          */
         this.getClips = function (username, params) { return __awaiter(_this, void 0, void 0, function () {
-            var user, broadcaster_id, link, response, data;
+            var user, broadcaster_id, link, linkParams, response, data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -926,36 +926,37 @@ var twitch_xs = /** @class */ (function () {
                         }
                         broadcaster_id = user.data[0].id;
                         link = "https://api.twitch.tv/helix/clips?broadcaster_id=".concat(broadcaster_id);
+                        linkParams = [];
                         if (params) {
                             if (params.started_at) {
                                 if (typeof params.started_at !== "string") {
                                     throw new TypeError("`started_at` parameter must be a string => Received ".concat(typeof params.started_at));
                                 }
-                                link = link.endsWith("?") ? "".concat(link, "started_at=").concat(params.started_at) : link.endsWith("&") ? "".concat(link, "started_at=").concat(params.started_at) : "".concat(link, "?started_at=").concat(params.started_at);
+                                linkParams.push("started_at=".concat(params.started_at));
                             }
                             if (params.ended_at) {
                                 if (typeof params.ended_at !== "string") {
                                     throw new TypeError("`ended_at` parameter must be a string => Received ".concat(typeof params.ended_at));
                                 }
-                                link = link.endsWith("?") ? "".concat(link, "ended_at=").concat(params.ended_at) : link.endsWith("&") ? "".concat(link, "ended_at=").concat(params.ended_at) : "".concat(link, "?ended_at=").concat(params.ended_at);
+                                linkParams.push("ended_at=".concat(params.ended_at));
                             }
                             if (params.after) {
                                 if (typeof params.after !== "string") {
                                     throw new TypeError("`after` parameter must be a string => Received ".concat(typeof params.after));
                                 }
-                                link = link.endsWith("?") ? "".concat(link, "after=").concat(params.after) : link.endsWith("&") ? "".concat(link, "after=").concat(params.after) : "".concat(link, "?after=").concat(params.after);
+                                linkParams.push("after=".concat(params.after));
                             }
                             if (params.before) {
                                 if (typeof params.before !== "string") {
                                     throw new TypeError("`before` parameter must be a string => Received ".concat(typeof params.before));
                                 }
-                                link = link.endsWith("?") ? "".concat(link, "before=").concat(params.before) : link.endsWith("&") ? "".concat(link, "before=").concat(params.before) : "".concat(link, "?before=").concat(params.before);
+                                linkParams.push("before=".concat(params.before));
                             }
                             if (params.first) {
                                 if (typeof params.first !== "number") {
                                     throw new TypeError("`first` parameter must be a string => Received ".concat(typeof params.first));
                                 }
-                                link = link.endsWith("?") ? "".concat(link, "first=").concat(params.first) : link.endsWith("&") ? "".concat(link, "first=").concat(params.first) : "".concat(link, "?first=").concat(params.first);
+                                linkParams.push("first=".concat(params.first));
                             }
                         }
                         if (!this.isExpiredToken()) return [3 /*break*/, 3];
@@ -963,13 +964,15 @@ var twitch_xs = /** @class */ (function () {
                     case 2:
                         _a.sent();
                         _a.label = 3;
-                    case 3: return [4 /*yield*/, fetch(link, {
-                            method: "GET",
-                            headers: {
-                                "Authorization": "".concat(this.token.token_type, " ").concat(this.token.access_token),
-                                "Client-Id": this.client_id,
-                            },
-                        })];
+                    case 3:
+                        link += "?" + linkParams.join("&");
+                        return [4 /*yield*/, fetch(link, {
+                                method: "GET",
+                                headers: {
+                                    "Authorization": "".concat(this.token.token_type, " ").concat(this.token.access_token),
+                                    "Client-Id": this.client_id,
+                                },
+                            })];
                     case 4:
                         response = _a.sent();
                         if (!response.ok) return [3 /*break*/, 6];
@@ -1014,29 +1017,30 @@ var twitch_xs = /** @class */ (function () {
         client.getTopGames().then(console.log);
          */
         this.getTopGames = function (params) { return __awaiter(_this, void 0, void 0, function () {
-            var link, response, data;
+            var link, linkParams, response, data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         link = "https://api.twitch.tv/helix/games/top";
+                        linkParams = [];
                         if (params) {
                             if (params.after) {
                                 if (typeof params.after !== "string") {
                                     throw new TypeError("`after` parameter must be a string => Received ".concat(typeof params.after));
                                 }
-                                link = link.endsWith("?") ? "".concat(link, "after=").concat(params.after) : link.endsWith("&") ? "".concat(link, "after=").concat(params.after) : "".concat(link, "?after=").concat(params.after);
+                                linkParams.push("after=".concat(params.after));
                             }
                             if (params.before) {
                                 if (typeof params.before !== "string") {
                                     throw new TypeError("`before` parameter must be a string => Received ".concat(typeof params.before));
                                 }
-                                link = link.endsWith("?") ? "".concat(link, "before=").concat(params.before) : link.endsWith("&") ? "".concat(link, "before=").concat(params.before) : "".concat(link, "?before=").concat(params.before);
+                                linkParams.push("before=".concat(params.before));
                             }
                             if (params.first) {
                                 if (typeof params.first !== "number") {
                                     throw new TypeError("`first` parameter must be a string => Received ".concat(typeof params.first));
                                 }
-                                link = link.endsWith("?") ? "".concat(link, "first=").concat(params.first) : link.endsWith("&") ? "".concat(link, "first=").concat(params.first) : "".concat(link, "?first=").concat(params.first);
+                                linkParams.push("first=".concat(params.first));
                             }
                         }
                         if (!this.isExpiredToken()) return [3 /*break*/, 2];
@@ -1044,13 +1048,15 @@ var twitch_xs = /** @class */ (function () {
                     case 1:
                         _a.sent();
                         _a.label = 2;
-                    case 2: return [4 /*yield*/, fetch(link, {
-                            method: "GET",
-                            headers: {
-                                "Authorization": "".concat(this.token.token_type, " ").concat(this.token.access_token),
-                                "Client-Id": this.client_id,
-                            },
-                        })];
+                    case 2:
+                        link += "?" + linkParams.join("&");
+                        return [4 /*yield*/, fetch(link, {
+                                method: "GET",
+                                headers: {
+                                    "Authorization": "".concat(this.token.token_type, " ").concat(this.token.access_token),
+                                    "Client-Id": this.client_id,
+                                },
+                            })];
                     case 3:
                         response = _a.sent();
                         if (!response.ok) return [3 /*break*/, 5];
@@ -1317,7 +1323,7 @@ var twitch_xs = /** @class */ (function () {
         client.getVideos("twitchdev").then(console.log);
          */
         this.getVideos = function (username, params) { return __awaiter(_this, void 0, void 0, function () {
-            var user, user_id, link, game, id, response, data;
+            var user, user_id, link, linkParams, game, id, response, data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1338,24 +1344,25 @@ var twitch_xs = /** @class */ (function () {
                         }
                         user_id = user.data[0].id;
                         link = "https://api.twitch.tv/helix/videos?user_id=".concat(user_id);
+                        linkParams = [];
                         if (!params) return [3 /*break*/, 4];
                         if (params.after) {
                             if (typeof params.after !== "string") {
                                 throw new TypeError("`after` parameter must be a string => Received ".concat(typeof params.after));
                             }
-                            link = link.endsWith("?") ? "".concat(link, "after=").concat(params.after) : link.endsWith("&") ? "".concat(link, "after=").concat(params.after) : "".concat(link, "?after=").concat(params.after);
+                            linkParams.push("after=".concat(params.after));
                         }
                         if (params.before) {
                             if (typeof params.before !== "string") {
                                 throw new TypeError("`before` parameter must be a string => Received ".concat(typeof params.before));
                             }
-                            link = link.endsWith("?") ? "".concat(link, "before=").concat(params.before) : link.endsWith("&") ? "".concat(link, "before=").concat(params.before) : "".concat(link, "?before=").concat(params.before);
+                            linkParams.push("before=".concat(params.before));
                         }
                         if (params.first) {
                             if (typeof params.first !== "number") {
                                 throw new TypeError("`first` parameter must be a number => Received ".concat(typeof params.first));
                             }
-                            link = link.endsWith("?") ? "".concat(link, "first=").concat(params.first.toString()) : link.endsWith("&") ? "".concat(link, "first=").concat(params.first.toString()) : "".concat(link, "?first=").concat(params.first.toString());
+                            linkParams.push("first=".concat(params.first));
                         }
                         if (!params.game_name) return [3 /*break*/, 3];
                         if (typeof params.game_name !== "string") {
@@ -1368,32 +1375,32 @@ var twitch_xs = /** @class */ (function () {
                             throw new Error("Cannot get this game : ".concat(params.game_name, " => ").concat(game.statusText));
                         }
                         id = game.data[0].id;
-                        link = link.endsWith("?") ? "".concat(link, "game_id=").concat(id) : link.endsWith("&") ? "".concat(link, "game_id=").concat(id) : "".concat(link, "?game_id=").concat(id);
+                        linkParams.push("game_id=".concat(id));
                         _a.label = 3;
                     case 3:
                         if (params.language) {
                             if (typeof params.language !== "string") {
                                 throw new TypeError("`language` parameter must be a string => Received ".concat(typeof params.language));
                             }
-                            link = link.endsWith("?") ? "".concat(link, "language=").concat(params.language) : link.endsWith("&") ? "".concat(link, "language=").concat(params.language) : "".concat(link, "?language=").concat(params.language);
+                            linkParams.push("language=".concat(params.language));
                         }
                         if (params.period) {
                             if (params.period !== "all" && params.period !== "day" && params.period !== "month" && params.period !== "week") {
                                 throw new Error("`period` parameter must be \"all\" or \"day\" or \"month\" or \"week\" => Received ".concat(params.period));
                             }
-                            link = link.endsWith("?") ? "".concat(link, "period=").concat(params.period) : link.endsWith("&") ? "".concat(link, "period=").concat(params.period) : "".concat(link, "?period=").concat(params.period);
+                            linkParams.push("period=".concat(params.period));
                         }
                         if (params.sort) {
                             if (params.sort !== "time" && params.sort !== "trending" && params.sort !== "views") {
                                 throw new Error("`sort` parameter must be \"time\" or \"trending\" or \"views\" => Received ".concat(params.sort));
                             }
-                            link = link.endsWith("?") ? "".concat(link, "sort=").concat(params.sort) : link.endsWith("&") ? "".concat(link, "sort=").concat(params.sort) : "".concat(link, "?sort=").concat(params.sort);
+                            linkParams.push("sort=".concat(params.sort));
                         }
                         if (params.type) {
                             if (params.type !== "all" && params.type !== "archive" && params.type !== "highlight" && params.type !== "upload") {
                                 throw new Error("`type` parameter must be \"all\" or \"archive\" or \"highlight\" or \"upload\" => Received ".concat(params.type));
                             }
-                            link = link.endsWith("?") ? "".concat(link, "type=").concat(params.type) : link.endsWith("&") ? "".concat(link, "type=").concat(params.type) : "".concat(link, "?type=").concat(params.type);
+                            linkParams.push("type=".concat(params.type));
                         }
                         _a.label = 4;
                     case 4:
@@ -1402,13 +1409,15 @@ var twitch_xs = /** @class */ (function () {
                     case 5:
                         _a.sent();
                         _a.label = 6;
-                    case 6: return [4 /*yield*/, fetch(link, {
-                            method: "GET",
-                            headers: {
-                                "Authorization": "".concat(this.token.token_type, " ").concat(this.token.access_token),
-                                "Client-Id": this.client_id,
-                            },
-                        })];
+                    case 6:
+                        link += "?" + linkParams.join("&");
+                        return [4 /*yield*/, fetch(link, {
+                                method: "GET",
+                                headers: {
+                                    "Authorization": "".concat(this.token.token_type, " ").concat(this.token.access_token),
+                                    "Client-Id": this.client_id,
+                                },
+                            })];
                     case 7:
                         response = _a.sent();
                         if (!response.ok) return [3 /*break*/, 9];

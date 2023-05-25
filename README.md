@@ -33,9 +33,9 @@ const client = new twitch_xs({ client_id:"votre_identifiant_client", client_secr
 
 Méthode | options | Description |
 | --- | --- | --- |
-| `generateToken()` | | Le token est gérer automatiquement mais vous pouvez en générez un nouveau au besoin. Il sera stocké dans un fichier json et sera automatiquement modifier régénérer s'il expire. |
+| `generateToken()` | | Le token est gérer automatiquement mais vous pouvez en générer un nouveau au besoin. Il sera stocké dans un fichier json et sera automatiquement régénérer s'il expire. |
 | `isExpiredToken()` | | Renvoi true si le token à expiré, sinon false |
-| `refreshToken()` | | Le token est gérer automatiquement mais vous pouvez en générez un nouveau au besoin. Il sera stocké dans un fichier json et sera automatiquement modifier régénérer s'il expire. |
+| `refreshToken()` | | Le token est gérer automatiquement mais vous pouvez en générer un nouveau au besoin. Il sera stocké dans un fichier json et sera automatiquement régénérer s'il expire. |
 | `getStreams()` | {<br>`users_names?`:string[];<br>`games_names?`:string[];<br>`type?`:string;<br>`languages?`:string[];<br>`first?`:number;<br>`before?`:string;<br>`after?`:string;<br>} | Renvoi les lives en cours. Vide si l'utilisateur ciblé n'est pas en live. |
 | `getUsers()` | `usernames`:string[]; | Renvoi les informations des utilisateurs ciblés. |
 | `getCheermotes()` | | Renvoi les "cheermotes". |
@@ -83,5 +83,6 @@ client.getTopGames({ first:1 }).then(console.log); // Renvoi les information sur
 client.getGames(["Fortnite"]).then(console.log); // Renvoi les informations sur les jeux ciblés.
 
 client.getCurrentSoundTrack("twitchdev").then(console.log); // Renvoi les informations sur la track actuelle de l'utilisateur ciblé (erreur si aucune track).
+
 client.getVideos("twitchdev").then(console.log); // Renvoi une liste des vidéos de l'utilisateur ciblé.
 ```

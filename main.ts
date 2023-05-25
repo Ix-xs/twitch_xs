@@ -1,4 +1,4 @@
-import token from "./token.json";
+import token from "./@twitch_xs/token.json";
 import { writeFileSync } from "node:fs";
 
 class twitch_xs {
@@ -68,7 +68,7 @@ class twitch_xs {
 			data.created_at = new Date().getTime();
 			this.token = data;
 			token[0] = data;
-			writeFileSync("./token.json", JSON.stringify(token, null, 4));
+			writeFileSync("./@twitch_xs/token.json", JSON.stringify(token, null, 4));
 			return { ok:response.ok, status:response.status, statusText:response.statusText, data:data };
 		}
 		else {
@@ -126,7 +126,7 @@ class twitch_xs {
         else {
             this.token = new_token.data;
 			token[0] = new_token.data;
-			writeFileSync("./token.json", JSON.stringify(token, null, 4));
+			writeFileSync("./@twitch_xs/token.json", JSON.stringify(token, null, 4));
             return { ok:new_token.ok, status:new_token.status, statusText:new_token.statusText, data:new_token.data };
         }
 
@@ -232,6 +232,7 @@ class twitch_xs {
     }> => {
 
 		let link = `https://api.twitch.tv/helix/streams`;
+		const linkParams:string[] = [];
 
 		if (params) {
 
@@ -239,21 +240,21 @@ class twitch_xs {
 				if (typeof params.after !== "string") {
 					throw new TypeError(`\`after\` parameter must be a string => Received ${typeof params.after}`);
 				}
-				link = link.endsWith("?") ? `${link}after=${params.after}` : link.endsWith("&") ? `${link}after=${params.after}` : `${link}?after=${params.after}`;
+				linkParams.push(`after=${params.after}`);
 			}
 
 			if (params.before) {
 				if (typeof params.before !== "string") {
 					throw new TypeError(`\`before\` parameter must be a string => Received ${typeof params.before}`);
 				}
-				link = link.endsWith("?") ? `${link}before=${params.before}` : link.endsWith("&") ? `${link}before=${params.before}` : `${link}?before=${params.before}`;
+				linkParams.push(`before=${params.before}`);
 			}
 
 			if (params.first) {
 				if (typeof params.first !== "number") {
 					throw new TypeError(`\`first\` parameter must be a number => Received ${typeof params.first}`);
 				}
-				link = link.endsWith("?") ? `${link}first=${params.first}` : link.endsWith("&") ? `${link}first=${params.first}` : `${link}?first=${params.first}`;
+				linkParams.push(`first=${params.first}`);
 			}
 
 			if (params.games_names) {
@@ -270,8 +271,7 @@ class twitch_xs {
 					throw new Error(`Cannot get games => ${games.statusText}`);
 				}
 				const ids = games.data.map(game => game.id);
-				const map = ids.slice(0, 100).join('&game_id=');
-				link = link.endsWith("?") ? `${link}game_id=${map}` : link.endsWith("&") ? `${link}game_id=${map}` : `${link}?game_id=${map}`;
+				linkParams.push(`game_id=${ids.slice(0, 100).join('&game_id=')}`);
 			}
 
 			if (params.languages) {
@@ -283,14 +283,13 @@ class twitch_xs {
 						throw new TypeError(`\`languages\` parameter must be an array of string => Received ${typeof params.languages[i]} in the array`);
 					}
 				}
-				const map = params.languages.slice(0, 100).join('&language=');
-				link = link.endsWith("?") ? `${link}language=${map}` : link.endsWith("&") ? `${link}language=${map}` : `${link}?language=${map}`;
+				linkParams.push(`language=${params.languages.slice(0, 100).join('&language=')}`);
 			}
 			if (params.type) {
 				if (params.type !== "all" && params.type !== "live") {
 					throw new Error(`\`type\` parameter must be "all" or "live"`);
 				}
-				link = link.endsWith("?") ? `${link}type=${params.type}` : link.endsWith("&") ? `${link}type=${params.type}` : `${link}?type=${params.type}`;
+				linkParams.push(`type=${params.type}`);
 			}
 			if (params.users_names) {
 				if (!Array.isArray(params.users_names)) {
@@ -305,9 +304,8 @@ class twitch_xs {
 				if (!users.ok || !users.data) {
 					throw new Error(`Cannot get users => ${users.statusText}`);
 				}
-				const ids = users.data.map(user => user.id);
-				const map = ids.slice(0, 100).join('&user_id=');
-				link = link.endsWith("?") ? `${link}user_id=${map}` : link.endsWith("&") ? `${link}user_id=${map}` : `${link}?user_id=${map}`;
+				const userIds = users.data.map(user => user.id);
+      			linkParams.push(`user_id=${userIds.slice(0, 100).join('&user_id=')}`);
 			}
 
 		}
@@ -315,6 +313,8 @@ class twitch_xs {
 		if (this.isExpiredToken()) {
             await this.refreshToken();
         }
+
+		link += "?" + linkParams.join("&");
 
 		const response = await fetch(link, {
 			method:"GET",
@@ -1092,6 +1092,7 @@ class twitch_xs {
 		const broadcaster_id = user.data[0].id;
 
 		let link = `https://api.twitch.tv/helix/clips?broadcaster_id=${broadcaster_id}`;
+		const linkParams:string[] = [];
 
 		if (params) {
 
@@ -1099,31 +1100,31 @@ class twitch_xs {
 				if (typeof params.started_at !== "string") {
 					throw new TypeError(`\`started_at\` parameter must be a string => Received ${typeof params.started_at}`);
 				}
-				link = link.endsWith("?") ? `${link}started_at=${params.started_at}` : link.endsWith("&") ? `${link}started_at=${params.started_at}` : `${link}?started_at=${params.started_at}`;
+				linkParams.push(`started_at=${params.started_at}`);
 			}
 			if (params.ended_at) {
 				if (typeof params.ended_at !== "string") {
 					throw new TypeError(`\`ended_at\` parameter must be a string => Received ${typeof params.ended_at}`);
 				}
-				link = link.endsWith("?") ? `${link}ended_at=${params.ended_at}` : link.endsWith("&") ? `${link}ended_at=${params.ended_at}` : `${link}?ended_at=${params.ended_at}`;
+				linkParams.push(`ended_at=${params.ended_at}`);
 			}
 			if (params.after) {
 				if (typeof params.after !== "string") {
 					throw new TypeError(`\`after\` parameter must be a string => Received ${typeof params.after}`);
 				}
-				link = link.endsWith("?") ? `${link}after=${params.after}` : link.endsWith("&") ? `${link}after=${params.after}` : `${link}?after=${params.after}`;
+				linkParams.push(`after=${params.after}`);
 			}
 			if (params.before) {
 				if (typeof params.before !== "string") {
 					throw new TypeError(`\`before\` parameter must be a string => Received ${typeof params.before}`);
 				}
-				link = link.endsWith("?") ? `${link}before=${params.before}` : link.endsWith("&") ? `${link}before=${params.before}` : `${link}?before=${params.before}`;
+				linkParams.push(`before=${params.before}`);
 			}
 			if (params.first) {
 				if (typeof params.first !== "number") {
 					throw new TypeError(`\`first\` parameter must be a string => Received ${typeof params.first}`);
 				}
-				link = link.endsWith("?") ? `${link}first=${params.first}` : link.endsWith("&") ? `${link}first=${params.first}` : `${link}?first=${params.first}`;
+				linkParams.push(`first=${params.first}`);
 			}
 
 		}
@@ -1131,6 +1132,8 @@ class twitch_xs {
 		if (this.isExpiredToken()) {
             await this.refreshToken();
         }
+
+		link += "?" + linkParams.join("&");
 
 		const response = await fetch(link, {
 			method:"GET",
@@ -1198,6 +1201,7 @@ class twitch_xs {
     }> => {
 
 		let link = `https://api.twitch.tv/helix/games/top`;
+		const linkParams:string[] = [];
 
 		if (params) {
 
@@ -1205,19 +1209,19 @@ class twitch_xs {
 				if (typeof params.after !== "string") {
 					throw new TypeError(`\`after\` parameter must be a string => Received ${typeof params.after}`);
 				}
-				link = link.endsWith("?") ? `${link}after=${params.after}` : link.endsWith("&") ? `${link}after=${params.after}` : `${link}?after=${params.after}`;
+				linkParams.push(`after=${params.after}`);
 			}
 			if (params.before) {
 				if (typeof params.before !== "string") {
 					throw new TypeError(`\`before\` parameter must be a string => Received ${typeof params.before}`);
 				}
-				link = link.endsWith("?") ? `${link}before=${params.before}` : link.endsWith("&") ? `${link}before=${params.before}` : `${link}?before=${params.before}`;
+				linkParams.push(`before=${params.before}`);
 			}
 			if (params.first) {
 				if (typeof params.first !== "number") {
 					throw new TypeError(`\`first\` parameter must be a string => Received ${typeof params.first}`);
 				}
-				link = link.endsWith("?") ? `${link}first=${params.first}` : link.endsWith("&") ? `${link}first=${params.first}` : `${link}?first=${params.first}`;
+				linkParams.push(`first=${params.first}`);
 			}
 
 		}
@@ -1225,6 +1229,8 @@ class twitch_xs {
 		if (this.isExpiredToken()) {
             await this.refreshToken();
         }
+
+		link += "?" + linkParams.join("&");
 
 		const response = await fetch(link, {
 			method:"GET",
@@ -1590,6 +1596,7 @@ class twitch_xs {
 		const user_id = user.data[0].id;
 
 		let link = `https://api.twitch.tv/helix/videos?user_id=${user_id}`;
+		const linkParams:string[] = [];
 
 		if (params) {
 
@@ -1597,19 +1604,19 @@ class twitch_xs {
 				if (typeof params.after !== "string") {
 					throw new TypeError(`\`after\` parameter must be a string => Received ${typeof params.after}`);
 				}
-				link = link.endsWith("?") ? `${link}after=${params.after}` : link.endsWith("&") ? `${link}after=${params.after}` : `${link}?after=${params.after}`;
+				linkParams.push(`after=${params.after}`);
 			}
 			if (params.before) {
 				if (typeof params.before !== "string") {
 					throw new TypeError(`\`before\` parameter must be a string => Received ${typeof params.before}`);
 				}
-				link = link.endsWith("?") ? `${link}before=${params.before}` : link.endsWith("&") ? `${link}before=${params.before}` : `${link}?before=${params.before}`;
+				linkParams.push(`before=${params.before}`);
 			}
 			if (params.first) {
 				if (typeof params.first !== "number") {
 					throw new TypeError(`\`first\` parameter must be a number => Received ${typeof params.first}`);
 				}
-				link = link.endsWith("?") ? `${link}first=${params.first.toString()}` : link.endsWith("&") ? `${link}first=${params.first.toString()}` : `${link}?first=${params.first.toString()}`;
+				linkParams.push(`first=${params.first}`);
 			}
 			if (params.game_name) {
 				if (typeof params.game_name !== "string") {
@@ -1620,31 +1627,31 @@ class twitch_xs {
 					throw new Error(`Cannot get this game : ${params.game_name} => ${game.statusText}`);
 				}
 				const id = game.data[0].id;
-				link = link.endsWith("?") ? `${link}game_id=${id}` : link.endsWith("&") ? `${link}game_id=${id}` : `${link}?game_id=${id}`;
+				linkParams.push(`game_id=${id}`);
 			}
 			if (params.language) {
 				if (typeof params.language !== "string") {
 					throw new TypeError(`\`language\` parameter must be a string => Received ${typeof params.language}`);
 				}
-				link = link.endsWith("?") ? `${link}language=${params.language}` : link.endsWith("&") ? `${link}language=${params.language}` : `${link}?language=${params.language}`;
+				linkParams.push(`language=${params.language}`)
 			}
 			if (params.period) {
 				if (params.period !== "all" && params.period !== "day" && params.period !== "month" && params.period !== "week") {
 					throw new Error(`\`period\` parameter must be "all" or "day" or "month" or "week" => Received ${params.period}`);
 				}
-				link = link.endsWith("?") ? `${link}period=${params.period}` : link.endsWith("&") ? `${link}period=${params.period}` : `${link}?period=${params.period}`;
+				linkParams.push(`period=${params.period}`);
 			}
 			if (params.sort) {
 				if (params.sort !== "time" && params.sort !== "trending" && params.sort !== "views") {
 					throw new Error(`\`sort\` parameter must be "time" or "trending" or "views" => Received ${params.sort}`);
 				}
-				link = link.endsWith("?") ? `${link}sort=${params.sort}` : link.endsWith("&") ? `${link}sort=${params.sort}` : `${link}?sort=${params.sort}`;
+				linkParams.push(`sort=${params.sort}`);
 			}
 			if (params.type) {
 				if (params.type !== "all" && params.type !== "archive" && params.type !== "highlight" && params.type !== "upload") {
 					throw new Error(`\`type\` parameter must be "all" or "archive" or "highlight" or "upload" => Received ${params.type}`);
 				}
-				link = link.endsWith("?") ? `${link}type=${params.type}` : link.endsWith("&") ? `${link}type=${params.type}` : `${link}?type=${params.type}`;
+				linkParams.push(`type=${params.type}`);
 			}
 
 		}
@@ -1652,6 +1659,8 @@ class twitch_xs {
 		if (this.isExpiredToken()) {
             await this.refreshToken();
         }
+
+		link += "?" + linkParams.join("&");
 
 		const response = await fetch(link, {
 			method:"GET",
